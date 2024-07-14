@@ -18,3 +18,5 @@
 * QPS test
 	![alt text](qps_test.png)
 	但是我是跑在localhost的測試，感覺好像不是這樣測試
+
+* 後端有用docker-compose但前端沒有用
