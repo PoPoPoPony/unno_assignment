@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  unno_backend:
+    build: .
+    # image: unno_backend:v2
+    # command: python manage.py runserver 0.0.0.0:8000
+    entrypoint: ["bash", "/code/entrypoint.sh"]
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=unno_assignment.settings
+    depends_on:
+      - redis
+    networks:
+      - unno_network
+
+  celery:
+    build: .
+    command: celery -A backend worker -l info
+    volumes:
+      - .:/code
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=unno_assignment.unno_assignment.settings
+    depends_on:
+      - redis
+    networks:
+      - unno_network
+
+  celery-beat:
+    build: .
+    command: celery -A backend beat -l info
+    volumes:
+      - .:/code
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=unno_assignment.unno_assignment.settings
+    depends_on:
+      - redis
+    networks:
+      - unno_network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - unno_network
+
+networks:
+  unno_network:
